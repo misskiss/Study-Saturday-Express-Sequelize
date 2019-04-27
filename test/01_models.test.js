@@ -4,9 +4,30 @@ const chai = require('chai');
 const expect = chai.expect;
 const Student = require('../db/models/student');
 const Test = require('../db/models/test');
-const db = require('../db/db');
+// const db = require('../db/db');
 const Promise = require('bluebird');
+const Sequelize = require('sequelize');
+const db = require('../db');
 
+
+
+const Student = db.define('student', {
+  firstName: {
+    type: Sequelize.STRING,
+  },
+  lastName: {
+    type: Sequelize.STRING,
+  },
+  email: {
+    type: Sequelize.STRING,
+    validate: {
+      isEmail: true
+    }
+  }
+}
+
+
+,
 describe('Models', function() {
   before(function() {
     return db.sync({ force: true });
@@ -37,7 +58,7 @@ describe('Models', function() {
     });
 
     describe('attributes definition', () => {
-      xit('includes `firstName`, `lastName`, and `email` fields', () => {
+      it('includes `firstName`, `lastName`, and `email` fields', () => {
         return student.save().then(savedStudent => {
           expect(savedStudent.firstName).to.equal('Peter');
           expect(savedStudent.lastName).to.equal('Parker');
@@ -45,7 +66,7 @@ describe('Models', function() {
         });
       });
 
-      xit('requires `firstName`', () => {
+      it('requires `firstName`', () => {
         student.firstName = null;
         return student.validate().then(
           () => {
@@ -55,7 +76,7 @@ describe('Models', function() {
         );
       });
 
-      xit('requires `lastName`', () => {
+      it('requires `lastName`', () => {
         student.lastName = null;
         return student.validate().then(
           () => {
@@ -65,7 +86,7 @@ describe('Models', function() {
         );
       });
 
-      xit('requires `email`', () => {
+      it('requires `email`', () => {
         student.email = null;
         return student.validate().then(
           () => {
@@ -75,7 +96,7 @@ describe('Models', function() {
         );
       });
 
-      xit('requires `email` to be in an email form', () => {
+      it('requires `email` to be in an email form', () => {
         student.email = 'hola world';
         return student.validate().then(
           () => {
